@@ -18,27 +18,12 @@
 </head>
 
 <body>
-  <script>
-    function submit_form() {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      const hash = username + password;
-      //const hash = sjcl.hash.sha1.hash(username+password);
-      const params = `username=${username}&password=${password}`;
-
-      var submit_req = new XMLHttpRequest();
-      submit_req.open("POST", "http://localhost:3000/api/login");
-      submit_req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      submit_req.send(params);
-      window.location = "http://localhost:3000/api/login";
-    }
-  </script>
   <div align=center>
     <a href="create.html">Create Account</a>
     <h3>Login</h3>
-    <form>
-      <input id='username' class='login' placeholder='Username'> <br>
-      <input type='password' id='password' class='login' placeholder="Password"> <br><br>
+    <form action="/login" method="POST">
+      <input id='username' name='username' class='login' placeholder='Username'> <br>
+      <input type='password' name='password' id='password' class='login' placeholder="Password"> <br><br>
       <input type='button' id='submit' value='Login' onclick='submit_form();'>
     </form>
   </div>
