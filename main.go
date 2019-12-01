@@ -3,15 +3,24 @@ package main
 import (
 	"html/template"
 	"net/http"
-  "ioutils"
 )
+
+var (
+	loginSite  *template.Template
+	createSite *template.Template
+)
+
+func init() {
+	loginSite = template.Must(template.ParseGlob("login.html"))
+	createSite = template.Must(template.ParseGlob("create.html"))
+}
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write(ioutils.ReadFile("login.html")); // TODO redirect them to the homepage if they're already logged in
+		loginSite.ExecuteTemplate(w, "login.html", nil)
 	})
 	http.HandleFunc("/create.html", func(w http.ResponseWriter, r *http.Request) {
-		w.Write(ioutils.ReadFile("create.html"));
+		createSite.ExecuteTemplate(w, "create.html", nil)
 	})
 	http.HandleFunc("/login", userAuth)
 	http.HandleFunc("/create", createAccount)
