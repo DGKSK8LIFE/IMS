@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 )
@@ -34,6 +35,7 @@ func handleCreateSite(w http.ResponseWriter, r *http.Request) {
 func userAuth(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
+	fmt.Println(username, password)
 	if len(username) > 0 && len(password) > 0 {
 		/* here we'll query the user account database to see if the this uname/password
 		pair is a valid row */
