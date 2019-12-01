@@ -17,7 +17,8 @@ func init() {
 
 func main() {
 	http.HandleFunc("/", handleLoginSite)
-	http.HandleFunc("/login", uAuth)
+	http.HandleFunc("/create.html", handleCreateSite)
+	http.HandleFunc("/login", userAuth)
 	http.HandleFunc("/create", createAccount)
 	http.ListenAndServe(":8000", nil)
 }
@@ -26,7 +27,11 @@ func handleLoginSite(w http.ResponseWriter, r *http.Request) {
 	loginSite.ExecuteTemplate(w, "login.html", nil)
 }
 
-func uAuth(w http.ResponseWriter, r *http.Request) {
+func handleCreateSite(w http.ResponseWriter, r *http.Request) {
+	createSite.ExecuteTemplate(w, "create.html", nil)
+}
+
+func userAuth(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	if len(username) > 0 && len(password) > 0 {
@@ -41,7 +46,7 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 	confirm := r.FormValue("confirm")
 	if len(username) > 0 && len(password) > 0 && len(confirm) > 0 && password == confirm {
 		/* here we check if the account already exists, if so, return an error message
-			if not, write the row to the account database
+		if not, write the row to the account database
 		*/
 	}
 }
