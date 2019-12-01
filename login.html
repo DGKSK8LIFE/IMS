@@ -24,7 +24,7 @@
       const password = document.getElementById('password').value;
       const hash = username + password;
       //const hash = sjcl.hash.sha1.hash(username+password);
-      const params = 'username=' + username + '&password=' + password;
+      const params = `username=${username}&password=${password}`;
 
       var submit_req = new XMLHttpRequest();
       submit_req.open("POST", "http://localhost:3000/api/login.php");
