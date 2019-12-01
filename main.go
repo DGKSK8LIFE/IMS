@@ -17,19 +17,15 @@ func init() {
 }
 
 func main() {
-	http.HandleFunc("/", handleLoginSite)
-	http.HandleFunc("/create.html", handleCreateSite)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		loginSite.ExecuteTemplate(w, "login.html", nil)
+	})
+	http.HandleFunc("/create.html", func(w http.ResponseWriter, r *http.Request) {
+		createSite.ExecuteTemplate(w, "create.html", nil)
+	})
 	http.HandleFunc("/login", userAuth)
 	http.HandleFunc("/create", createAccount)
 	http.ListenAndServe(":8000", nil)
-}
-
-func handleLoginSite(w http.ResponseWriter, r *http.Request) {
-	loginSite.ExecuteTemplate(w, "login.html", nil)
-}
-
-func handleCreateSite(w http.ResponseWriter, r *http.Request) {
-	createSite.ExecuteTemplate(w, "create.html", nil)
 }
 
 func userAuth(w http.ResponseWriter, r *http.Request) {
