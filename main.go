@@ -65,13 +65,14 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 		}
 		defer db.Close()
 		if row := accountTaken(email, db); row != true {
-
+			query := fmt.Sprintf("INSERT INTO accounts(email, password) VALUES ('%s', '%s')", email, password)
+			db.Exec(query)
 		} else if row == true {
-			fmt.Fprintf(w, "<h1 style='text-align: center;'>Username is taken, choose another one!</h1>")
+			fmt.Fprint(w, "<h1 style='text-align: center;'>Account already exists!</h1>")
 		}
 
 	} else {
-		fmt.Fprintf(w, "<h1 style='text-align:center;>Please fill out all forms!</h1>")
+		fmt.Fprint(w, "<h1 style='text-align:center;>Please fill out all forms!</h1>")
 	}
 }
 
@@ -79,7 +80,7 @@ func rowExists(email, password string, db *sql.DB) bool {
 	var exists bool
 	query := fmt.Sprintf("SELECT * FROM ACCOUNTS WHERE email='%s' AND password='%s';", email, password)
 	if err := db.QueryRow(query).Scan(&email, &password); err != nil && err != sql.ErrNoRows {
-		log.Fatalf("database error, we're fucked")
+		log.Fatal("database error, we're fucked")
 	} else if err == sql.ErrNoRows {
 		return false
 	} else if err == nil {
@@ -94,7 +95,7 @@ func accountTaken(email string, db *sql.DB) bool {
 	var exists bool
 	query := fmt.Sprintf("SELECT * FROM ACCOUNTS WHERE email='%s';", email)
 	if err := db.QueryRow(query).Scan(&email); err != nil && err != sql.ErrNoRows {
-		log.Fatalf("database error, we're fucked")
+		log.Fatal("database error, we're fucked")
 	} else if err == sql.ErrNoRows {
 		exists = false
 	} else if err == nil {
