@@ -40,6 +40,8 @@ func userAuth(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
+		defer db.Close()
+		rowExists(email, password, db)
 
 		/* here we'll query the user account database to see if the this uname/password
 		pair is a valid row */
@@ -57,11 +59,11 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func rowExists(username, password string, db *sql.DB) bool {
+func rowExists(email, password string, db *sql.DB) bool {
 	var exists bool
-	query := fmt.Sprintf("SELECT * FROM ACCOUNTS WHERE username='%s' AND password='%s'", username, password)
+	query := fmt.Sprintf("SELECT * FROM ACCOUNTS WHERE email='%s' AND password='%s'", email, password)
 	if err := db.QueryRow(query); err != nil {
-		// deny access
+		exists = false
 	}
 	exists = true
 	return exists
