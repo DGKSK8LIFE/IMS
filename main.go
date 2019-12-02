@@ -70,7 +70,8 @@ func rowExists(email, password string, db *sql.DB) bool {
 	query := fmt.Sprintf("SELECT * FROM ACCOUNTS WHERE email='%s' AND password='%s'", email, password)
 	if err := db.QueryRow(query); err != nil {
 		exists = false
+	} else {
+		exists = true
 	}
-	exists = true
 	return exists
 }
