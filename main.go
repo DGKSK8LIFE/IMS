@@ -67,9 +67,11 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 		if row := accountTaken(email, db); row != true {
 
 		} else if row == true {
-
+			fmt.Fprintf(w, "<h1 style='text-align: center;'>Username is taken, choose another one!</h1>")
 		}
 
+	} else {
+		fmt.Fprintf(w, "<h1 style='text-align:center;>Please fill out all forms!</h1>")
 	}
 }
 
