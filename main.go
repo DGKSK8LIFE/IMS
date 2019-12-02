@@ -6,6 +6,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var (
@@ -38,8 +40,9 @@ func userAuth(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		query := fmt.Sprintf("SELECT * FROM accounts WHERE email='%s'", email)
-		isValidAccount := db.Exec(query)
+		query := fmt.Sprintf("SELECT * FROM accounts WHERE email='%s' AND password='%s'", email, password)
+		isValidAccount, _ := db.Exec(query)
+		fmt.Println(isValidAccount)
 		/* here we'll query the user account database to see if the this uname/password
 		pair is a valid row */
 	} // else {output some kind of message saying to fill out all forms}
