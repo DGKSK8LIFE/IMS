@@ -59,9 +59,17 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 	confirm := r.FormValue("confirm")
 	if len(email) > 0 && len(password) > 0 && len(confirm) > 0 && password == confirm {
-		/* here we check if the account already exists, if so, return an error message
-		if not, write the row to the account database
-		*/
+		db, err := sql.Open("sqlite3", "accounts.sqlite")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer db.Close()
+		if row := accountTaken(email, db); row != true {
+
+		} else if row == true {
+
+		}
+
 	}
 }
 
@@ -72,6 +80,21 @@ func rowExists(email, password string, db *sql.DB) bool {
 		log.Fatalf("database error, we're fucked")
 	} else if err == sql.ErrNoRows {
 		return false
+	} else if err == nil {
+		exists = true
+	} else {
+		exists = false
+	}
+	return exists
+}
+
+func accountTaken(email string, db *sql.DB) bool {
+	var exists bool
+	query := fmt.Sprintf("SELECT * FROM ACCOUNTS WHERE email='%s'", email)
+	if err := db.QueryRow(query).Scan(&email); err != nil && err != sql.ErrNoRows {
+		log.Fatalf("database error, we're fucked")
+	} else if err == sql.ErrNoRows {
+		exists = false
 	} else if err == nil {
 		exists = true
 	} else {
