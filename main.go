@@ -63,8 +63,8 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 		defer db.Close()
-		if row := accountTaken(email, db); row != true {
-			query := fmt.Sprintf("INSERT INTO accounts(email, password) VALUES ('%s', '%s')", email, password)
+		if row := accountTaken(email, db); row == false {
+			query := fmt.Sprintf("INSERT INTO accounts (email, password) VALUES ('%s', '%s')", email, password)
 			db.Exec(query)
 		} else if row == true {
 			fmt.Fprint(w, "<h1 style='text-align: center;'>Account already exists!</h1>")
