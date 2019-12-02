@@ -41,11 +41,17 @@ func userAuth(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 		defer db.Close()
-		rowExists(email, password, db)
+		if row := rowExists(email, password, db); row == true {
+			// allow access
+			fmt.Fprintf(w, "<h1 style='text-align: center;'>Welcome!</h1>")
+		} else if row == false {
+			// deny access
+			loginSite.ExecuteTemplate(w, "login.html", nil)
+		}
 
-		/* here we'll query the user account database to see if the this uname/password
-		pair is a valid row */
-	} // else {output some kind of message saying to fill out all forms}
+	} else {
+		fmt.Fprintf(w, "<h1 style='text-align: center;'>please fill out all forms</h1>")
+	}
 }
 
 func createAccount(w http.ResponseWriter, r *http.Request) {
