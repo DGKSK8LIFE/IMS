@@ -68,10 +68,14 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 func rowExists(email, password string, db *sql.DB) bool {
 	var exists bool
 	query := fmt.Sprintf("SELECT * FROM ACCOUNTS WHERE email='%s' AND password='%s'", email, password)
-	if err := db.QueryRow(query); err != nil {
-		exists = false
-	} else {
+	if err := db.QueryRow(query).Scan(&email, &password); err != nil && err != sql.ErrNoRows {
+		log.Fatalf("database error, we're fucked")
+	} else if err == sql.ErrNoRows {
+		return false
+	} else if err == nil {
 		exists = true
+	} else {
+		exists = false
 	}
 	return exists
 }
