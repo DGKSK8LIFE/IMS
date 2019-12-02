@@ -43,14 +43,14 @@ func userAuth(w http.ResponseWriter, r *http.Request) {
 		defer db.Close()
 		if row := rowExists(email, password, db); row == true {
 			// allow access
-			fmt.Fprintf(w, "<h1 style='text-align: center;'>Welcome!</h1>")
+			fmt.Fprint(w, "<h1 style='text-align: center;'>Welcome!</h1>")
 		} else if row == false {
 			// deny access
 			loginSite.ExecuteTemplate(w, "login.html", nil)
 		}
 
 	} else {
-		fmt.Fprintf(w, "<h1 style='text-align: center;'>please fill out all forms</h1>")
+		fmt.Fprint(w, "<h1 style='text-align: center;'>please fill out all forms</h1>")
 	}
 }
 
