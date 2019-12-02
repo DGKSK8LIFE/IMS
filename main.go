@@ -42,7 +42,6 @@ func userAuth(w http.ResponseWriter, r *http.Request) {
 		}
 		defer db.Close()
 		if row := rowExists(email, password, db); row == true {
-			// allow access
 			fmt.Fprint(w, "<h1 style='text-align: center;'>Welcome!</h1>")
 		} else if row == false {
 			// deny access
@@ -78,7 +77,7 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 
 func rowExists(email, password string, db *sql.DB) bool {
 	var exists bool
-	query := fmt.Sprintf("SELECT * FROM ACCOUNTS WHERE email='%s' AND password='%s';", email, password)
+	query := fmt.Sprintf("SELECT * FROM ACCOUNTS WHERE email='%s' AND password='%s'", email, password)
 	if err := db.QueryRow(query).Scan(&email, &password); err != nil && err != sql.ErrNoRows {
 		log.Fatal("database error, we're fucked")
 	} else if err == sql.ErrNoRows {
@@ -93,7 +92,7 @@ func rowExists(email, password string, db *sql.DB) bool {
 
 func accountTaken(email string, db *sql.DB) bool {
 	var exists bool
-	query := fmt.Sprintf("SELECT * FROM ACCOUNTS WHERE email='%s';", email)
+	query := fmt.Sprintf("SELECT * FROM ACCOUNTS WHERE email='%s'", email)
 	if err := db.QueryRow(query).Scan(&email); err != nil && err != sql.ErrNoRows {
 		log.Fatal("database error, we're fucked")
 	} else if err == sql.ErrNoRows {
