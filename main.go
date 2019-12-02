@@ -56,8 +56,7 @@ func userAuth(w http.ResponseWriter, r *http.Request) {
 func createAccount(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("username")
 	password := r.FormValue("password")
-	confirm := r.FormValue("confirm")
-	if len(email) > 0 && len(password) > 0 && len(confirm) > 0 {
+	if len(email) > 0 && len(password) > 0 {
 		db, err := sql.Open("sqlite3", "accounts.sqlite")
 		if err != nil {
 			log.Fatal(err)
