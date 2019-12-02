@@ -41,8 +41,8 @@ func userAuth(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 		query := fmt.Sprintf("SELECT * FROM accounts WHERE email='%s' AND password='%s'", email, password)
-		isValidAccount, _ := db.Exec(query)
-		fmt.Println(isValidAccount)
+		//err := db.QueryRow(query).Scan(&email, &password) still trying to find the correct method, stack overflow's answers seem to be incorrect
+
 		/* here we'll query the user account database to see if the this uname/password
 		pair is a valid row */
 	} // else {output some kind of message saying to fill out all forms}
