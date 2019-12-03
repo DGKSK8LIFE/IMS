@@ -61,6 +61,7 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
+		defer db.Close()
 		if row := rowExists(email, password, db); row == false {
 			query := fmt.Sprintf("INSERT INTO accounts (email, password) \n VALUES ('%s', '%s');", email, password)
 			db.Exec(query)
@@ -68,8 +69,8 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, "<h1 style='text-align: center;'>Account already exists!</h1>")
 		}
 
-	} else {
-		fmt.Fprint(w, "<h1 style='text-align:center;>Please fill out all forms!</h1>")
+	} else if len(email) == 0 || len(password) == 0 {
+		fmt.Fprintf(w, "<h1 style='text-align:center;>Please fill out all forms!</h1>")
 	}
 }
 
