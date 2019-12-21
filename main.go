@@ -56,21 +56,16 @@ func userAuth(w http.ResponseWriter, r *http.Request) {
 func createAccount(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	password := r.FormValue("password")
-	if len(email) > 0 && len(password) > 0 {
-		db, err := sql.Open("sqlite3", "accounts.sqlite")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer db.Close()
-		if row := rowExists(email, password, db); row == false {
-			query := fmt.Sprintf("INSERT INTO accounts (email, password) \n VALUES ('%s', '%s');", email, password)
-			db.Exec(query)
-		} else if row == true {
-			fmt.Fprint(w, "<h1 style='text-align: center;'>Account already exists!</h1>")
-		}
-
-	} else if len(email) == 0 || len(password) == 0 {
-		fmt.Fprintf(w, "<h1 style='text-align:center;>Please fill out all forms!</h1>")
+	db, err := sql.Open("sqlite3", "accounts.sqlite")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+	if row := rowExists(email, password, db); row == false {
+		query := fmt.Sprintf("INSERT INTO accounts (email, password) \n VALUES ('%s', '%s');", email, password)
+		db.Exec(query)
+	} else if row == true {
+		fmt.Fprint(w, "<h1 style='text-align: center;'>Account already exists!</h1>")
 	}
 }
 
@@ -81,10 +76,8 @@ func rowExists(email, password string, db *sql.DB) bool {
 		log.Fatal("database error, we're fucked")
 	} else if err == sql.ErrNoRows {
 		return false
-	} else if err == nil {
-		exists = true
 	} else {
-		exists = false
+		exists = true
 	}
 	return exists
 }
@@ -96,10 +89,8 @@ func accountTaken(email string, db *sql.DB) bool {
 		log.Fatal("database error, we're fucked")
 	} else if err == sql.ErrNoRows {
 		exists = false
-	} else if err == nil {
-		exists = true
 	} else {
-		exists = false
+		exists = true
 	}
 	return exists
 }
