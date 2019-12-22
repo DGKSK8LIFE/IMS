@@ -35,21 +35,16 @@ func main() {
 func userAuth(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	password := r.FormValue("password")
-	if len(email) > 0 && len(password) > 0 {
-		db, err := sql.Open("sqlite3", "accounts.sqlite")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer db.Close()
-		if row := rowExists(email, password, db); row == true {
-			fmt.Fprint(w, "<h1 style='text-align: center;'>Welcome!</h1>")
-		} else if row == false {
-			// deny access
-			loginSite.ExecuteTemplate(w, "login.html", nil)
-		}
-
-	} else {
-		fmt.Fprint(w, "<h1 style='text-align: center;'>please fill out all forms</h1>")
+	db, err := sql.Open("sqlite3", "accounts.sqlite")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+	if row := rowExists(email, password, db); row == true {
+		fmt.Fprint(w, "<h1 style='text-align: center;'>Welcome!</h1>")
+	} else if row == false {
+		// deny access
+		loginSite.ExecuteTemplate(w, "login.html", nil)
 	}
 }
 
@@ -61,12 +56,8 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	if row := rowExists(email, password, db); row == false {
-		query := fmt.Sprintf("INSERT INTO accounts (email, password) VALUES ('%s', '%s');", email, password)
-		db.Exec(query)
-	} else if row == true {
-		fmt.Fprint(w, "<h1 style='text-align: center;'>Account already exists!</h1>")
-	}
+	query := fmt.Sprintf("INSERT INTO accounts (email, password) VALUES ('%s', '%s');", email, password)
+	db.Exec(query)
 }
 
 func rowExists(email, password string, db *sql.DB) bool {
@@ -75,22 +66,22 @@ func rowExists(email, password string, db *sql.DB) bool {
 	if err := db.QueryRow(query).Scan(&email, &password); err != nil && err != sql.ErrNoRows {
 		log.Fatal("database error, we're fucked")
 	} else if err == sql.ErrNoRows {
-		return false
-	} else {
-		exists = true
-	}
-	return exists
-}
-
-func accountTaken(email string, db *sql.DB) bool {
-	var exists bool
-	query := fmt.Sprintf("SELECT * FROM ACCOUNTS WHERE email='%s'", email)
-	if err := db.QueryRow(query).Scan(&email); err != nil && err != sql.ErrNoRows {
-		log.Fatal("database error, we're fucked")
-	} else if err == sql.ErrNoRows {
 		exists = false
 	} else {
 		exists = true
 	}
 	return exists
 }
+
+// func accountTaken(email string, db *sql.DB) bool {
+// 	var taken bool
+// 	query := fmt.Sprintf("SELECT * FROM ACCOUNTS WHERE email='%s'", email)
+// 	if err := db.QueryRow(query).Scan(); err != nil && err != sql.ErrNoRows {
+// 		log.Fatal(err)
+// 	} else if err == sql.ErrNoRows {
+// 		taken = false
+// 	} else {
+// 		taken = true
+// 	}
+// 	return taken
+// }
