@@ -57,6 +57,7 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 	query := fmt.Sprintf("INSERT INTO accounts (email, password) VALUES ('%s', '%s');", email, password)
 	db.Exec(query)
+	loginSite.ExecuteTemplate(w, "login.html", nil)
 }
 
 func rowExists(email, password string, db *sql.DB) bool {
