@@ -43,7 +43,6 @@ func userAuth(w http.ResponseWriter, r *http.Request) {
 	if row := rowExists(email, password, db); row == true {
 		fmt.Fprint(w, "<h1 style='text-align: center;'>Welcome!</h1>")
 	} else if row == false {
-		// deny access
 		loginSite.ExecuteTemplate(w, "login.html", nil)
 	}
 }
