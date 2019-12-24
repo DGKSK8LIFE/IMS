@@ -40,7 +40,7 @@ func userAuth(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	if row := rowExists(email, password, db); row == true {
+	if row := validateAccount(email, password, db); row == true {
 		fmt.Fprint(w, "<h1 style='text-align: center;'>Welcome!</h1>")
 	} else if row == false {
 		loginSite.ExecuteTemplate(w, "login.html", nil)
@@ -60,11 +60,11 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 	loginSite.ExecuteTemplate(w, "login.html", nil)
 }
 
-func rowExists(email, password string, db *sql.DB) bool {
+func validateAccount(email, password string, db *sql.DB) bool {
 	var exists bool
 	query := fmt.Sprintf("SELECT * FROM ACCOUNTS WHERE email='%s' AND password='%s'", email, password)
 	if err := db.QueryRow(query).Scan(&email, &password); err != nil && err != sql.ErrNoRows {
-		log.Fatal("database error, we're fucked")
+		log.Fatal(err)
 	} else if err == sql.ErrNoRows {
 		exists = false
 	} else {
