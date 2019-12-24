@@ -76,7 +76,7 @@ func rowExists(email, password string, db *sql.DB) bool {
 // func accountTaken(email string, db *sql.DB) bool {
 // 	var taken bool
 // 	query := fmt.Sprintf("SELECT * FROM ACCOUNTS WHERE email='%s'", email)
-// 	if err := db.QueryRow(query).Scan(); err != nil && err != sql.ErrNoRows {
+// 	if err := db.QueryRow(query).Scan(&email); err != nil && err != sql.ErrNoRows {
 // 		log.Fatal(err)
 // 	} else if err == sql.ErrNoRows {
 // 		taken = false
