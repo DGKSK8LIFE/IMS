@@ -1,4 +1,4 @@
-# API Specs
+# IMS API Specs
 ## Functions
 - add piece of equipment to inventory
   - requires ADMIN privs
